@@ -172,18 +172,26 @@ def print_hash(n1):
 
 def main(argv):
 
-	with open(argv[1], 'rb') as infile1:
-		with open(argv[2], 'rb') as infile2:
-			str1 = infile1.read()
-			str2 = infile2.read()
+    if len(argv) != 3:
+        print('Usage: <scriptname> <file1> <file2>')
+        print('Example: simhash.py testfile1 testfile2')
+        quit()
+    else:
+        file1 = argv[1]
+        file2 = argv[2]
 
-			# n1 = Nilsimsa()
-			# n1.update(str1)
-			n1 = Nilsimsa(str1)
-			n2 = Nilsimsa(str2)
+    with open(file1, 'rb') as infile1:
+        with open(file2, 'rb') as infile2:
+            str1 = infile1.read()
+            str2 = infile2.read()
 
-			compare(n1, n2)
-			print_hash(n1)
+            # n1 = Nilsimsa()
+            # n1.update(str1)
+            n1 = Nilsimsa(str1)
+            n2 = Nilsimsa(str2)
+
+            compare(n1, n2)
+            print_hash(n1)
 
 
 
