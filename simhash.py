@@ -41,20 +41,16 @@ class Simhash():
 
 		# print(self.accumulator)
 
+		hash_list = []
+
 		for x in range(0,256,8):
 			new_string = ''
 			this_byte = self.accumulator[x:x+8]
 			for bit in this_byte:
 				new_string += str(bit)
-			print(new_string)
+			hash_list.append(int(new_string,2))
 
-		# byte_list = []
-
-		# for x in range(0,256,8):
-		# 	current_hex = self.accumulator[x:x+8]
-		# 	hex_string = ''.join([str(x) for x in current_hex])
-		# 	val = hex(int(hex_string))
-		# 	print(val)
+		return hash_list
 
 
 	def onebyte_hash(self, s):
@@ -79,7 +75,7 @@ def main(argv):
 		str1 = str1.split()
 
 		# call sim.calc_digest
-		sim.calc_digest(str1)
+		print(sim.calc_digest(str1))
 
 
 if __name__ == '__main__':
