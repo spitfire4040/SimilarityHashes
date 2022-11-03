@@ -8,32 +8,34 @@ from itertools import permutations
 from itertools import combinations
 
 # class: Simhash
-class Simhash():
-	def __init__(self):
-		self.accumulator = [0]*256
-		window = [-1]*5
-		# self.counter = 0
+class Simhash:
+	def __init__(self, acc_size, window_size, ngram_size):
+		self.acc_size = acc_size
+		self.window_size = window_size
+		self.ngram_size = ngram_size
+		self.accumulator = [0]*self.acc_size
+		self.window = [-1]*window_size
 
 	def calc_digest(self, str1):
 		counter = 0
 
-		# iterate through string with sliding window of 5 bytes
+		# iterate through string with sliding window of x bytes
 		for x in range(counter, len(str1)):
-			window = str1[x:x+5]
+			self.window = str1[x:x+self.window_size]
 			counter += 1
 
 			# calculate trigrams
-			n = 3
-			trigrams = ngrams(window, n)
+			n = self.ngram_size
+			trigrams = ngrams(self.window, n)
 
 			for ngram in trigrams:
 				for item in ngram:
 					current_int = int.from_bytes(item, byteorder=sys.byteorder)
-					hash_index = self.onebyte_hash(current_int)
+					hash_index = self.onebyte_hash(current_int,self.acc_size)
 					self.accumulator[hash_index] += 1
 		# print(self.accumulator)
 		median_value = statistics.median(self.accumulator)
-		for x in range(0,256):
+		for x in range(0,self.acc_size):
 			if self.accumulator[x] <= median_value:
 				self.accumulator[x] = 0
 			else:
@@ -43,7 +45,7 @@ class Simhash():
 
 		hash_list = []
 
-		for x in range(0,256,8):
+		for x in range(0,self.acc_size,8):
 			new_string = ''
 			this_byte = self.accumulator[x:x+8]
 			for bit in this_byte:
@@ -53,17 +55,20 @@ class Simhash():
 		return hash_list
 
 
-	def onebyte_hash(self, s):
-		return hash(s) % 256
+	def onebyte_hash(self, s, acc):
+		return hash(s) % acc
 
 # main function
 def main(argv):
 
 	# capture file name from command line
-	infile1 = argv[1]
+	acc_size = int(argv[1])
+	window_size = int(argv[2])
+	ngram_size = int(argv[3])
+	infile1 = argv[4]
 
-	# create new Simhash object
-	sim = Simhash()
+	# create new Simhash object (Simhash(<accumulator_size><window_size><ngram_size>))
+	sim = Simhash(acc_size,window_size,ngram_size)
 
 	# open input file and read to str1 as bytes object
 	with open(infile1, 'rb') as file1:
