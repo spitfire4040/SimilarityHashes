@@ -16,7 +16,12 @@ class Simhash:
         # set internal variables
         self.acc_size = acc_size
         self.window_size = window_size
-        self.comb_size = comb_size
+
+        # set combination size, if bigger than window, take window size instead
+        if window_size > comb_size:
+            self.comb_size = comb_size
+        else:
+            self.comb_size = window_size
         self.accumulator = [0]*self.acc_size
         self.window = [-1]*window_size
         self.hash_const = []
@@ -26,6 +31,12 @@ class Simhash:
         for item in hash_const:
             self.hash_const.append(item)
 
+    # class method: hash combinations
+    def hashenator(self, s):
+        result = 1
+        for item in s:
+            result = item * result
+        return (result + 3) % self.acc_size
 
     # class method: calc_digest
     def calc_digest(self, str1):
@@ -38,15 +49,16 @@ class Simhash:
             self.window = str1[x:x+self.window_size]
             counter += 1
 
+            # take each combination of size n
             for combination in itertools.combinations(self.window, self.comb_size):
 
-                a = combination[0]
-                b = combination[1]
-                c = combination[2]
-                d = self.acc_size
+                # call hash function
+                val = self.hashenator(combination)
 
-                val = (d-(a+b))*(d-(b+c))*(d-(c+a)) % d
+                # get index of value in hash_const array
                 ind = self.hash_const.index(val)
+
+                #increment value at accumulator
                 self.accumulator[ind] += 1
 
         # find median value in accumulator
@@ -58,8 +70,6 @@ class Simhash:
                 self.accumulator[x] = 0
             else:
                 self.accumulator[x] = 1
-
-        # print(self.accumulator)
 
         # create list to hold final feature vector
         hash_list = []
@@ -75,9 +85,6 @@ class Simhash:
 
         # return final feature vector
         return hash_list
-
-
-
 
 # main function
 def main(argv):
