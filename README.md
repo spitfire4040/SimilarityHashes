@@ -1,2 +1,2 @@
 # SimilarityHashes
-Development of an 'adjustable' similarity hashing tool for Smart Recon
+Development of an 'adjustable' similarity hashing tool for network device fingerprinting.
